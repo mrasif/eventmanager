@@ -22,3 +22,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         # Token created to return on the time of sign up
         Token.objects.create(user=user)
         return user
+
+class UserPublicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'username')

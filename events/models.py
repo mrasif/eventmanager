@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 
 # Create your models here.
@@ -37,6 +38,10 @@ class Event(models.Model):
     @property
     def is_available(self):
         return self.available_seats and not self.has_expired and not self.has_booking_expired and self.booking_start_date <= datetime.now() and self.is_active
+
+    @property
+    def attendees_count(self):
+        return self.attendees.count()
     
 class Booking(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
