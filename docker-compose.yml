@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  event_api:
+    restart: always
+    container_name: event_api
+    env_file:
+      - .env
+    build:
+      context: .
+    ports:
+      - "3000:8000"
+    networks:
+      - event_net
+    volumes:
+      - .:/code
+    command: >
+      sh -c "
+             python3 manage.py makemigrations --noinput &&
+             python3 manage.py migrate --noinput &&
+             python3 manage.py collectstatic --noinput &&
+             python3 manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - event_db
+
+  event_db:
+    image: bitnami/postgresql:12
+    container_name: event_db
+    ports:
+      - "5433:5432"
+    env_file: .env
+    networks:
+      - event_net
+    volumes:
+      - event_db_data:/bitnami/postgresql
+    
+volumes:
+  event_db_data:
+networks:
+  event_net:

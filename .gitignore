@@ -1,0 +1,13 @@
+# Directory to be ignored by git
+__pycache__/
+.idea/
+.vscode/
+.venv/
+event_db_data/
+
+# Files to be ignored by git
+*.pyc
+*.swp
+*.sqlite3
+.env
+*.log
