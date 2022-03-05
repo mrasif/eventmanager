@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     # For cors headers
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
     # Local App
     'users',
 ]
