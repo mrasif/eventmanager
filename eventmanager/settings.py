@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     # For cors headers
     'corsheaders',
     'rest_framework',
+    # Local App
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -115,13 +117,17 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+STATIC_ROOT = "/static/"
 
-CORS_ALLOW_ALL_ORIGINS = os.environ.get("CORS_ALLOW_ALL_ORIGINS", True)
+CORS_ALLOW_ALL_ORIGINS = bool(int(os.environ.get("CORS_ALLOW_ALL_ORIGINS", True)))
 CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS",'').split(',')
+
+AUTH_USER_MODEL = 'users.CustomUser'
