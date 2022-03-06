@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -77,17 +78,26 @@ WSGI_APPLICATION = 'eventmanager.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get("POSTGRESQL_DATABASE"),
-        'USER': os.environ.get("POSTGRESQL_USERNAME"),
-        "PASSWORD": os.environ.get("POSTGRESQL_PASSWORD"),
-        "HOST": os.environ.get("POSTGRESQL_HOST"),
-        "PORT": os.environ.get("POSTGRESQL_PORT")
+# Check if command service is running in test mode then use sqlite3 database else use postgresql
+TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
+if TESTING:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ.get("POSTGRESQL_DATABASE"),
+            'USER': os.environ.get("POSTGRESQL_USERNAME"),
+            "PASSWORD": os.environ.get("POSTGRESQL_PASSWORD"),
+            "HOST": os.environ.get("POSTGRESQL_HOST"),
+            "PORT": os.environ.get("POSTGRESQL_PORT")
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
