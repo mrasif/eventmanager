@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework import serializers
 from users.serializers import UserPublicSerializer
 from .models import Event, Booking
@@ -77,6 +78,17 @@ class BookingCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         attrs['user'] = self.context['request'].user
         attrs['event'] = Event.objects.get(pk=self.context['view'].kwargs['pk'])
+
+        event = Event.objects.get(pk=self.context['view'].kwargs['pk'])
+        if not event.is_active:
+            raise serializers.ValidationError("Event is not active")
+        if event.has_booking_expired:
+            raise serializers.ValidationError("Event has expired")
+        if datetime.now() < event.booking_start_date:
+            raise serializers.ValidationError("Booking start date has not been reached")
+        if not event.is_available:
+            raise serializers.ValidationError("Event is not available")
+        
         return attrs
 
     def validate_event(self, value):
@@ -85,6 +97,8 @@ class BookingCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Event is not active")
         if event.has_booking_expired:
             raise serializers.ValidationError("Event has expired")
+        if datetime.now() < event.booking_start_date:
+            raise serializers.ValidationError("Booking start date has not been reached")
         if not event.is_available:
             raise serializers.ValidationError("Event is not available")
         return value
