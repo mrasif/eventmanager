@@ -6,7 +6,26 @@ from .models import Event, Booking
 # Create your views here.
 
 class CreateEventAPIView(ListCreateAPIView):
-    queryset = Event.objects.all()
+    
+    def get_queryset(self):
+        name = self.request.query_params.get('name', '').lower()
+        sort_by = self.request.query_params.get('sort_by', 'id')
+        sort_by_allowed_list = ['id', 'name', 'start_date', 'end_date']
+        # settings default sort_by to id, if not in allowed list
+        if sort_by not in sort_by_allowed_list:
+            sort_by = 'id'
+        sorting_order = self.request.query_params.get('sorting_order', 'asc')
+        sorting_order_allowed_list = ['asc', 'desc']
+        # settings default sorting_order to asc, if not in allowed list
+        if sorting_order not in sorting_order_allowed_list:
+            sorting_order = 'asc'
+        
+        if sorting_order == 'desc':
+            sort_by = '-' + sort_by
+
+        qs = Event.objects.filter(name__icontains=name).order_by(sort_by)
+        return qs
+    
 
     # override serializer for different methods
     def get_serializer_class(self):

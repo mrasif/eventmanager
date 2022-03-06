@@ -118,10 +118,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    # Test case response data was returning ordered dict instead of json
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 
