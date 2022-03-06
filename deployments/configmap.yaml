@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eventmanager-config-map
+  namespace: eventmanager
+data:
+  ALLOWED_HOSTS: "*"
+  POSTGRESQL_HOST: "db-host-name"
+  POSTGRESQL_PORT: "5432"
+  POSTGRESQL_DATABASE: "event_db"
+  CORS_ALLOW_ALL_ORIGINS: 1
+  CORS_ALLOWED_ORIGINS: "http://localhost:3000,http://127.0.0.1:3000"

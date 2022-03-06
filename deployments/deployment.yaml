@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: eventmanager
+  name: eventmanager
+  namespace: eventmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventmanager
+  template:
+    metadata:
+      labels:
+        app: eventmanager
+    spec:
+      containers:
+        - image: ghcr.io/mrasif/eventmanager:v0.0.1
+          name: eventmanager
+          env:
+            - name: DEBUG
+              value: "false"
+          envFrom:
+            - secretRef:
+                name: eventmanager-secret
+            - configMapRef:
+                name: eventmanager-config-map
+
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: github-registry
