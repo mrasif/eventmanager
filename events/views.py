@@ -63,3 +63,13 @@ class BookingListCreateAPIView(ListCreateAPIView):
         if self.request.method == 'POST':
             return BookingCreateSerializer
         return BookingListSerializer
+
+class BookingDetailAPIView(RetrieveAPIView):
+    serializer_class = BookingListSerializer
+    permission_classes = [IsAuthenticated,]
+
+    def get_queryset(self):
+        qs = Booking.objects.all()
+        if self.request.user.is_superuser:
+            return qs
+        return qs.filter(user=self.request.user)

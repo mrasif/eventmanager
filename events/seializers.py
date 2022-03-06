@@ -102,3 +102,10 @@ class BookingCreateSerializer(serializers.ModelSerializer):
         if not event.is_available:
             raise serializers.ValidationError("Event is not available")
         return value
+
+class BookingDetailSerializer(serializers.ModelSerializer):
+    event = EventListPublicSerializer(many=False)
+    user = UserPublicSerializer(many=False)
+    class Meta:
+        model = Booking
+        fields = ('id', 'event', 'user', 'created_at', 'updated_at')
