@@ -34,6 +34,22 @@ class EventUpdateSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'updated_at','attendees', 'created_by')
 
 
+class BookingCountByDateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = ('created_at', 'attendees_count')
+class EventSummarySerializer(serializers.ModelSerializer):
+
+    created_by = UserPublicSerializer()
+    is_active = serializers.BooleanField(read_only=True)
+    is_available = serializers.BooleanField(read_only=True)
+    available_seats = serializers.IntegerField(read_only=True)
+    attendees_count = serializers.IntegerField(read_only=True)
+    class Meta:
+        model = Event
+        exclude = ('attendees',)
+        read_only_fields = ('created_at', 'updated_at', 'attendees', 'created_by')
+
 class EventListPublicSerializer(serializers.ModelSerializer):
     is_active = serializers.BooleanField(read_only=True)
     is_available = serializers.BooleanField(read_only=True)

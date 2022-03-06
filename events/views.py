@@ -1,6 +1,6 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
-from .seializers import EventCreateSerializer, EventListSerializer, EventUpdateSerializer, BookingListSerializer, BookingCreateSerializer
+from .seializers import EventCreateSerializer, EventListSerializer, EventUpdateSerializer, BookingListSerializer, BookingCreateSerializer, EventSummarySerializer
 from .permissions import IsAdminUser
 from .models import Event, Booking
 # Create your views here.
@@ -34,6 +34,20 @@ class EventRetriveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PUT', 'PATCH', 'DELETE']:
             return [IsAdminUser(),]
         return [IsAuthenticated(),]
+
+
+class EventSummaryAPIView(RetrieveAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSummarySerializer
+    permission_classes = [IsAdminUser,]
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        data = response.data
+        obj = self.get_object()
+        data['attendees_count_group_by_date']= obj.attendees_count_group_by_date
+        response.data= data
+        return response
 
 class BookingListCreateAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated,]

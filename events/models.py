@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.db import models
+from django.db.models import Count
 
 # Create your models here.
 class Event(models.Model):
@@ -42,6 +43,10 @@ class Event(models.Model):
     @property
     def attendees_count(self):
         return self.attendees.count()
+
+    @property
+    def attendees_count_group_by_date(self):
+        return Booking.objects.filter(event=self).values('created_at__date').annotate(attendees_count=Count('id'))
     
 class Booking(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
